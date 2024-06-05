@@ -1,5 +1,8 @@
 """A generator to create a Terraform project, reducing startup time"""
 
+import os
+import sys
+
 BACKEND_TF = (
     "backend.tf",
     """
@@ -54,6 +57,9 @@ def write_content_to_file(file_name: str, content: str):
 
 
 if __name__ == "__main__":
+    project_name = sys.argv[1]
+    os.mkdir(project_name)
+    os.chdir(project_name)
     tf_files = [BACKEND_TF, MAIN_TF, OUTPUTS_TF, VARIABLES_TF]
     for title in tf_files:
         print(title)
