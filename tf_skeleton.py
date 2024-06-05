@@ -56,10 +56,14 @@ def write_content_to_file(file_name: str, content: str):
         f.write(content)
 
 
-if __name__ == "__main__":
-    project_name = sys.argv[1]
+def setup_project_working_directory(project_name: str):
     os.mkdir(project_name)
     os.chdir(project_name)
+
+
+if __name__ == "__main__":
+    project_name = sys.argv[1]
+    setup_project_working_directory(project_name)
     tf_files = [BACKEND_TF, MAIN_TF, OUTPUTS_TF, VARIABLES_TF]
     for title in tf_files:
         print(title)
