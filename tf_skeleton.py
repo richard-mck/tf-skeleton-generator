@@ -47,9 +47,14 @@ variable "optional_var" {
 """,
 )
 
+
+def write_content_to_file(file_name: str, content: str):
+    with open(file_name, "w") as f:
+        f.write(content)
+
+
 if __name__ == "__main__":
     tf_files = [BACKEND_TF, MAIN_TF, OUTPUTS_TF, VARIABLES_TF]
     for title in tf_files:
         print(title)
-        with open(title[0], "w") as f:
-            f.write(title[1])
+        write_content_to_file(title[0], title[1])
