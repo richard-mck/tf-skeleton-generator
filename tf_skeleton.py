@@ -48,4 +48,8 @@ variable "optional_var" {
 )
 
 if __name__ == "__main__":
-    pass
+    tf_files = [BACKEND_TF, MAIN_TF, OUTPUTS_TF, VARIABLES_TF]
+    for title in tf_files:
+        print(title)
+        with open(title[0], "w") as f:
+            f.write(title[1])
