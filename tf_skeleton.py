@@ -2,8 +2,11 @@
 
 import os
 import sys
+from collections import namedtuple
 
-BACKEND_TF = (
+TFFile = namedtuple("TFFile", ["file_name", "file_content"])
+
+BACKEND_TF = TFFile(
     "backend.tf",
     """
 terraform {
@@ -15,7 +18,7 @@ terraform {
 """,
 )
 
-MAIN_TF = (
+MAIN_TF = TFFile(
     "main.tf",
     """
 resource "random_id" "id" {
@@ -24,7 +27,7 @@ resource "random_id" "id" {
 """,
 )
 
-OUTPUTS_TF = (
+OUTPUTS_TF = TFFile(
     "outputs.tf",
     """
 output "required" {
@@ -34,7 +37,7 @@ output "required" {
 """,
 )
 
-VARIABLES_TF = (
+VARIABLES_TF = TFFile(
     "variables.tf",
     """
 variable "required_var" {
