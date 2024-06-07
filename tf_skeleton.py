@@ -61,13 +61,20 @@ class SkeletonGenerator:
         self.environments = ["dev", "staging", "prod"]
         self.region = "us-west-2"
 
+    @staticmethod
+    def _create_directory(dir_name: str):
+        try:
+            os.makedirs(dir_name)
+        except OSError as err:
+            print(f"Directory {dir_name} already exists, skipping")
+
     def setup_project_working_directory(self):
-        os.mkdir(self.project_name)
+        self._create_directory(project_name)
         os.chdir(self.project_name)
 
     def create_env_directories(self):
         for env in self.environments:
-            os.makedirs(f"{env}/{self.region}")
+            self._create_directory(f"{env}/{self.region}")
 
     def create_tf_files(self):
         for title in self.file_list:
