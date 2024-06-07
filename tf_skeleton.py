@@ -63,14 +63,14 @@ class SkeletonGenerator:
         os.mkdir(self.project_name)
         os.chdir(self.project_name)
 
-    def setup_tf_files(self):
+    def create_tf_files(self):
         for title in self.file_list:
             print(title)
             write_content_to_file(title.file_name, title.file_content)
 
     def generate_project(self):
         self.setup_project_working_directory()
-        self.setup_tf_files()
+        self.create_tf_files()
 
 
 def write_content_to_file(file_name: str, content: str):
