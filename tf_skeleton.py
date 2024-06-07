@@ -58,10 +58,16 @@ class SkeletonGenerator:
     def __init__(self, project_name):
         self.project_name = project_name
         self.file_list = [BACKEND_TF, MAIN_TF, OUTPUTS_TF, VARIABLES_TF]
+        self.environments = ["dev", "staging", "prod"]
+        self.region = "us-west-2"
 
     def setup_project_working_directory(self):
         os.mkdir(self.project_name)
         os.chdir(self.project_name)
+
+    def create_env_directories(self):
+        for env in self.environments:
+            os.makedirs(f"{env}/{self.region}")
 
     def create_tf_files(self):
         for title in self.file_list:
@@ -71,6 +77,7 @@ class SkeletonGenerator:
     def generate_project(self):
         self.setup_project_working_directory()
         self.create_tf_files()
+        self.create_env_directories()
 
 
 def write_content_to_file(file_name: str, content: str):
