@@ -79,22 +79,20 @@ class SkeletonGenerator:
 
     def create_module_directory(self, module_name: str):
         self._create_directory(f"modules/{module_name}")
+        os.chdir(f"modules/{module_name}")
 
-    def create_tf_files(self):
-        for title in self.file_list:
+    @staticmethod
+    def create_tf_files(file_list: list[TFFile]):
+        for title in file_list:
             print(title)
             write_content_to_file(title.file_name, title.file_content)
 
     def generate_project(self):
         self.setup_project_working_directory()
-        self.create_tf_files()
+        self.create_tf_files(self.file_list)
         self.create_env_directories()
         self.create_module_directory(self.project_name)
-        # TODO: refactor this so it's less horrible
-        for file in self.module_list:
-            write_content_to_file(
-                f"modules/{self.project_name}/{file.file_name}", file.file_content
-            )
+        self.create_tf_files(self.module_list)
 
 
 def write_content_to_file(file_name: str, content: str):
