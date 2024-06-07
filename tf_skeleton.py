@@ -76,6 +76,9 @@ class SkeletonGenerator:
         for env in self.environments:
             self._create_directory(f"{env}/{self.region}")
 
+    def create_module_directory(self, module_name: str):
+        self._create_directory(f"modules/{module_name}")
+
     def create_tf_files(self):
         for title in self.file_list:
             print(title)
@@ -85,6 +88,7 @@ class SkeletonGenerator:
         self.setup_project_working_directory()
         self.create_tf_files()
         self.create_env_directories()
+        self.create_module_directory(self.project_name)
 
 
 def write_content_to_file(file_name: str, content: str):
