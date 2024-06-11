@@ -77,7 +77,6 @@ class SkeletonGenerator:
     def create_environments(self):
         """Create one directory and necessary files per environment and region"""
         for env in self.environments:
-            env_path = f"{env}/{self.region}"
             module_instance = TFFile(
                 f"{self.project_name}.tf",
                 f"""
@@ -89,14 +88,13 @@ module "{self.project_name}" {{
             )
             # Append the module instantiation file to the core files
             self.create_directory_and_files(
-                env_path,
+                f"{env}/{self.region}",
                 self.file_list + [module_instance],
             )
 
     def create_module(self, module_name: str):
         """Create a new directory and required files for our primary module"""
-        module_path = f"modules/{module_name}"
-        self.create_directory_and_files(module_path, self.file_list)
+        self.create_directory_and_files(f"modules/{module_name}", self.file_list)
 
     def create_directory_and_files(self, path_to_dir: str, files: list[TFFile]):
         """Given a path, create a new directory and files to populate it"""
