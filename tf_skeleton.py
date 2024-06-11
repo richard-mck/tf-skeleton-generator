@@ -64,9 +64,10 @@ class SkeletonGenerator:
 
     @staticmethod
     def _create_directory(dir_name: str, make_cwd=False):
+        """Create a dir at a given path, skip if dir already exists. Optionally, move to dir for subsequent actions"""
         try:
             os.makedirs(dir_name)
-        except OSError as err:
+        except OSError:
             print(f"Directory {dir_name} already exists, skipping")
         if make_cwd:
             os.chdir(dir_name)
@@ -75,19 +76,23 @@ class SkeletonGenerator:
         self._create_directory(project_name, make_cwd=True)
 
     def create_env_directories(self):
+        """Create one directory per environment and region"""
         for env in self.environments:
             self._create_directory(f"{env}/{self.region}")
 
     def create_module_directory(self, module_name: str):
+        """Create a new directory for our primary module"""
         self._create_directory(f"modules/{module_name}", make_cwd=True)
 
     @staticmethod
     def create_tf_files(file_list: list[TFFile]):
+        """Iterate over a list of files, creating new instances of each"""
         for title in file_list:
-            print(title)
+            print(f"Creating {title.file_name}")
             write_content_to_file(title.file_name, title.file_content)
 
     def generate_project(self):
+        """The main function of the module"""
         self.setup_project_working_directory()
         self.create_tf_files(self.file_list)
         self.create_env_directories()
@@ -96,6 +101,7 @@ class SkeletonGenerator:
 
 
 def write_content_to_file(file_name: str, content: str):
+    """Given a filename and a string, write this data to a new file"""
     with open(file_name, "w") as f:
         f.write(content)
 
