@@ -58,7 +58,6 @@ class SkeletonGenerator:
     def __init__(self, project_name):
         self.project_name = project_name
         self.file_list = [BACKEND_TF, MAIN_TF, OUTPUTS_TF, VARIABLES_TF]
-        self.module_file_list = [i for i in self.file_list if i != BACKEND_TF]
         self.environments = ["dev", "staging", "prod"]
         self.region = "us-west-2"
 
@@ -99,9 +98,15 @@ module "{self.project_name}" {{
             )
             self.create_tf_files(env_files)
 
-    def create_module_directory(self, module_name: str):
-        """Create a new directory for our primary module"""
-        self._create_directory(f"modules/{module_name}", make_cwd=True)
+    def create_module(self, module_name: str):
+        """Create a new directory and required files for our primary module"""
+        module_path = f"modules/{module_name}"
+        self._create_directory(module_path)
+        module_files = [
+            TFFile(f"modules/{module_name}/{item.file_name}", item.file_content)
+            for item in self.file_list
+        ]
+        self.create_tf_files(module_files)
 
     @staticmethod
     def create_tf_files(file_list: list[TFFile]):
@@ -114,8 +119,7 @@ module "{self.project_name}" {{
         """The main function of the module"""
         self.setup_project_working_directory()
         self.create_environments()
-        self.create_module_directory(self.project_name)
-        self.create_tf_files(self.module_file_list)
+        self.create_module(self.project_name)
 
 
 def write_content_to_file(file_name: str, content: str):
