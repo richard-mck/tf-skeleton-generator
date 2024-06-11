@@ -83,6 +83,19 @@ class SkeletonGenerator:
                 TFFile(f"{env}/{self.region}/{item.file_name}", item.file_content)
                 for item in self.file_list
             ]
+            module_instance = TFFile(
+                f"{env}/{self.region}/{self.project_name}.tf",
+                f"""
+module "{self.project_name}" {{
+  source       = "../../modules/{self.project_name}"
+  required_var = "This one is required!"
+}}
+            """,
+            )
+            env_files.append(module_instance)
+            write_content_to_file(
+                module_instance.file_name, module_instance.file_content
+            )
             self.create_tf_files(env_files)
 
     def create_module_directory(self, module_name: str):
