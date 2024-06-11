@@ -58,22 +58,69 @@ class SkeletonGenerator:
     def __init__(self, project_name):
         self.project_name = project_name
         self.file_list = [BACKEND_TF, MAIN_TF, OUTPUTS_TF, VARIABLES_TF]
+        self.environments = ["dev", "staging", "prod"]
+        self.region = "us-west-2"
+
+    @staticmethod
+    def _create_directory(dir_name: str, make_cwd=False):
+        """Create a dir at a given path, skip if dir already exists. Optionally, move to dir for subsequent actions"""
+        try:
+            os.makedirs(dir_name)
+        except OSError:
+            print(f"Directory {dir_name} already exists, skipping")
+        if make_cwd:
+            os.chdir(dir_name)
 
     def setup_project_working_directory(self):
-        os.mkdir(self.project_name)
-        os.chdir(self.project_name)
+        self._create_directory(project_name, make_cwd=True)
 
-    def setup_tf_files(self):
-        for title in self.file_list:
-            print(title)
+    def create_environments(self):
+        """Create one directory and necessary files per environment and region"""
+        for env in self.environments:
+            module_instance = TFFile(
+                f"{self.project_name}.tf",
+                f"""
+module "{self.project_name}" {{
+  source       = "../../modules/{self.project_name}"
+  required_var = "This one is required!"
+}}
+            """,
+            )
+            # Append the module instantiation file to the core files
+            self.create_directory_and_files(
+                f"{env}/{self.region}",
+                self.file_list + [module_instance],
+            )
+
+    def create_module(self):
+        """Create a new directory and required files for our primary module"""
+        self.create_directory_and_files(f"modules/{self.project_name}", self.file_list)
+
+    def create_directory_and_files(self, path_to_dir: str, files: list[TFFile]):
+        """Given a path, create a new directory and files to populate it"""
+        self._create_directory(path_to_dir)
+        new_files = [
+            TFFile(f"{path_to_dir}/{item.file_name}", item.file_content)
+            for item in files
+        ]
+        self.create_tf_files(new_files)
+
+    @staticmethod
+    def create_tf_files(file_list: list[TFFile]):
+        """Iterate over a list of files, creating new instances of each"""
+        for title in file_list:
+            print(f"Creating {title.file_name}")
             write_content_to_file(title.file_name, title.file_content)
 
     def generate_project(self):
+        """The main function of the module"""
         self.setup_project_working_directory()
-        self.setup_tf_files()
+        self.create_environments()
+        self.create_module()
 
 
 def write_content_to_file(file_name: str, content: str):
+    """Given a filename and a string, write this data to a new file"""
     with open(file_name, "w") as f:
         f.write(content)
 
