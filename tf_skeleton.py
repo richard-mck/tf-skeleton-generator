@@ -75,10 +75,15 @@ class SkeletonGenerator:
     def setup_project_working_directory(self):
         self._create_directory(project_name, make_cwd=True)
 
-    def create_env_directories(self):
-        """Create one directory per environment and region"""
+    def create_environments(self):
+        """Create one directory and necessary files per environment and region"""
         for env in self.environments:
             self._create_directory(f"{env}/{self.region}")
+            env_files = [
+                TFFile(f"{env}/{self.region}/{item.file_name}", item.file_content)
+                for item in self.file_list
+            ]
+            self.create_tf_files(env_files)
 
     def create_module_directory(self, module_name: str):
         """Create a new directory for our primary module"""
@@ -94,8 +99,7 @@ class SkeletonGenerator:
     def generate_project(self):
         """The main function of the module"""
         self.setup_project_working_directory()
-        self.create_tf_files(self.file_list)
-        self.create_env_directories()
+        self.create_environments()
         self.create_module_directory(self.project_name)
         self.create_tf_files(self.module_file_list)
 
