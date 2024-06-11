@@ -108,6 +108,15 @@ module "{self.project_name}" {{
         ]
         self.create_tf_files(module_files)
 
+    def create_directory_and_files(self, path_to_dir: str, files: list[TFFile]):
+        """Given a path, create a new directory and files to populate it"""
+        self._create_directory(path_to_dir)
+        new_files = [
+            TFFile(f"{path_to_dir}/{item.file_name}", item.file_content)
+            for item in files
+        ]
+        self.create_tf_files(new_files)
+
     @staticmethod
     def create_tf_files(file_list: list[TFFile]):
         """Iterate over a list of files, creating new instances of each"""
