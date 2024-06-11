@@ -78,13 +78,14 @@ class SkeletonGenerator:
     def create_environments(self):
         """Create one directory and necessary files per environment and region"""
         for env in self.environments:
-            self._create_directory(f"{env}/{self.region}")
+            env_path = f"{env}/{self.region}"
+            self._create_directory(env_path)
             env_files = [
-                TFFile(f"{env}/{self.region}/{item.file_name}", item.file_content)
+                TFFile(f"{env_path}/{item.file_name}", item.file_content)
                 for item in self.file_list
             ]
             module_instance = TFFile(
-                f"{env}/{self.region}/{self.project_name}.tf",
+                f"{env_path}/{self.project_name}.tf",
                 f"""
 module "{self.project_name}" {{
   source       = "../../modules/{self.project_name}"
