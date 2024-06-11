@@ -78,13 +78,8 @@ class SkeletonGenerator:
         """Create one directory and necessary files per environment and region"""
         for env in self.environments:
             env_path = f"{env}/{self.region}"
-            self._create_directory(env_path)
-            env_files = [
-                TFFile(f"{env_path}/{item.file_name}", item.file_content)
-                for item in self.file_list
-            ]
             module_instance = TFFile(
-                f"{env_path}/{self.project_name}.tf",
+                f"{self.project_name}.tf",
                 f"""
 module "{self.project_name}" {{
   source       = "../../modules/{self.project_name}"
@@ -92,21 +87,16 @@ module "{self.project_name}" {{
 }}
             """,
             )
-            env_files.append(module_instance)
-            write_content_to_file(
-                module_instance.file_name, module_instance.file_content
+            # Append the module instantiation file to the core files
+            self.create_directory_and_files(
+                env_path,
+                self.file_list + [module_instance],
             )
-            self.create_tf_files(env_files)
 
     def create_module(self, module_name: str):
         """Create a new directory and required files for our primary module"""
         module_path = f"modules/{module_name}"
-        self._create_directory(module_path)
-        module_files = [
-            TFFile(f"modules/{module_name}/{item.file_name}", item.file_content)
-            for item in self.file_list
-        ]
-        self.create_tf_files(module_files)
+        self.create_directory_and_files(module_path, self.file_list)
 
     def create_directory_and_files(self, path_to_dir: str, files: list[TFFile]):
         """Given a path, create a new directory and files to populate it"""
