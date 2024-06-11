@@ -92,9 +92,9 @@ module "{self.project_name}" {{
                 self.file_list + [module_instance],
             )
 
-    def create_module(self, module_name: str):
+    def create_module(self):
         """Create a new directory and required files for our primary module"""
-        self.create_directory_and_files(f"modules/{module_name}", self.file_list)
+        self.create_directory_and_files(f"modules/{self.project_name}", self.file_list)
 
     def create_directory_and_files(self, path_to_dir: str, files: list[TFFile]):
         """Given a path, create a new directory and files to populate it"""
@@ -116,7 +116,7 @@ module "{self.project_name}" {{
         """The main function of the module"""
         self.setup_project_working_directory()
         self.create_environments()
-        self.create_module(self.project_name)
+        self.create_module()
 
 
 def write_content_to_file(file_name: str, content: str):
